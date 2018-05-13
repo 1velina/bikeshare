@@ -5,7 +5,7 @@ import numpy as np
 CITY_DATA = { 'chicago': 'chicago.csv',
               'new york city': 'new_york_city.csv',
               'washington': 'washington.csv' }
-months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+months = ['january', 'february', 'march', 'april', 'may', 'june']
 
 days_of_week = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
@@ -28,13 +28,21 @@ def get_filters():
             city = cities[city_position-1]
 
             # get user input for month (all, january, february, ... , june)
-            month = input('Please enter a month (all, january, february, ... , june)\n')
+            month = input('Please enter a month (all, january, february, ... , june)\n').lower()
+            if month != 'all' and month not in months:
+                raise ValueError('Invalid month entered "{}". Only enter months from January to June or all'.format(month))
 
             # get user input for day of week (all, monday, tuesday, ... sunday)
-            day = input('Please enter a day of the week (all, monday, tuesday, ... sunday)\n')
+            day = input('Please enter a day of the week (all, monday, tuesday, ... sunday)\n').lower()
+            if day != 'all' and day not in days_of_week:
+                raise ValueError('Invalid day entered "{}". Only enter days from Monday to Sunday or all'.format(day))
 
             print('-'*40)
             return city, month, day
+        except ValueError as error:
+            print(error)
+        except KeyboardInterrupt:
+            break
         except:
             print('Invalid Input')
 
@@ -76,7 +84,8 @@ def time_stats(df):
 
     # display the most common month
     popular_month = df['month'].mode()[0]
-    print('The most popular month is {}'.format(popular_month) )
+    popular_month_name = months[popular_month-1]
+    print('The most popular month is {}'.format(popular_month_name.title()))
 
 
     # display the most common day of week
@@ -99,11 +108,11 @@ def station_stats(df):
 
     # display most commonly used start station
     popular_start_station = df['Start Station'].mode()[0]
-    print('The most popular start station is {}'.format(popular_start_station))
+    print('The most popular start station is "{}"'.format(popular_start_station))
 
     # display most commonly used end station
     popular_end_station = df['End Station'].mode()[0]
-    print('The most popular end station is {}'.format(popular_end_station))
+    print('The most popular end station is "{}"'.format(popular_end_station))
 
 
     # display most frequent combination of start station and end station trip
@@ -111,7 +120,7 @@ def station_stats(df):
 
     popular_trip = df['Combined Station'].mode()[0]
 
-    print('The most popular trip is {}'.format(popular_trip))
+    print('The most popular trip is "{}"'.format(popular_trip))
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -125,11 +134,11 @@ def trip_duration_stats(df):
 
     # display total travel time
     total_travel_time = df['Trip Duration'].sum()
-    print('The total travel time is {}'.format(total_travel_time))
+    print('The total travel time is {} seconds '.format(total_travel_time))
 
     # display mean travel time
     mean_travel_time = df['Trip Duration'].mean()
-    print('The mean travel time is {}'.format(mean_travel_time))
+    print('The mean travel time is {} seconds'.format(round(mean_travel_time,2)))
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -155,13 +164,13 @@ def user_stats(df):
 
     # Display earliest, most recent, and most common year of birth
     try:
-        earliest_birth_year = df['Birth Year'].min()
+        earliest_birth_year = int(df['Birth Year'].min())
         print('The earliest birth year is {}'.format(earliest_birth_year))
 
-        most_recent_birth_year = df['Birth Year'].max()
+        most_recent_birth_year = int(df['Birth Year'].max())
         print('The most recent birth year is {}'.format(most_recent_birth_year))
 
-        most_common_birth_year = df['Birth Year'].mode()[0]
+        most_common_birth_year = int(df['Birth Year'].mode()[0])
         print('The most common birth year is {}'.format(most_common_birth_year))
     except:
         print('Birth Year data not available')
