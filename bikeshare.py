@@ -178,6 +178,22 @@ def user_stats(df):
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
 
+def display_raw_data(df):
+    """Display 5 lines of data if the user asks, display 5 more if the user asks for more, continue until the user stops asking"""
+
+    start_time = time.time()
+    raw_data = input('Would you like to review 5 rows of raw data? Please enter: Yes or No\n')
+    start_row = 0
+    while raw_data.lower() == 'yes':
+        for i in range(start_row, start_row + 5):
+            print(df.ix[i])
+
+        start_row += 5
+        raw_data = input('Would you like to review 5 more rows of raw data? Please enter: Yes or No\n')
+
+    print("\nThis took %s seconds." % (time.time() - start_time))
+    print('-'*40)
+
 
 def main():
     while True:
@@ -188,6 +204,7 @@ def main():
         station_stats(df)
         trip_duration_stats(df)
         user_stats(df)
+        display_raw_data(df)
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
